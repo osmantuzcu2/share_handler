@@ -3,13 +3,14 @@
 //  Pods
 //
 //  Created by Josh Juncker on 7/7/22.
-//
+//  edited by Osman Tuzcu 4.9.2022
 
 import UIKit
 import Social
 import MobileCoreServices
 import Photos
 import Intents
+import Contacts
 
 @available(iOS 14.0, *)
 @available(iOSApplicationExtension 14.0, *)
@@ -114,13 +115,16 @@ open class ShareHandlerIosViewController: SLComposeServiceViewController {
         if let item = data as? String {
             sharedText.append(item)
         } else {
-            dismissWithError()
+            let contact = try CNContactVCardSerialization.contacts(with: data as! Data)
+            let go = contact.first?.phoneNumbers.first?.value.stringValue ?? "number"
+            sharedText.append(go)
         }
         
     }
     
     public func handleUrl (content: NSExtensionItem, attachment: NSItemProvider, index: Int) async throws {
         let data = try await attachment.loadItem(forTypeIdentifier: urlContentType, options: nil)
+        print("tests")
         
             if let item = data as? URL {
                 sharedText.append(item.absoluteString)
